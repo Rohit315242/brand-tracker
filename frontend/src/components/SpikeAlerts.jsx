@@ -1,20 +1,36 @@
-import React from "react";
+export default function SpikeAlerts({ stats = {} }) {
+  const last = Number(stats.lastCount ?? 0);
+  const prev = Number(stats.prevCount ?? 0);
 
-export default function SpikeAlerts({ stats = {} }){
-  const { lastCount = 0, prevCount = 0 } = stats;
-  const spike = prevCount ? Math.round(((lastCount - prevCount) / prevCount) * 100) : 0;
+  let spike = 0;
+
+  if (prev === 0 && last > 0) {
+    spike = 100;  // Infinite growth
+  } else if (prev > 0) {
+    spike = Math.round(((last - prev) / prev) * 100);
+  }
+
   const isSpike = spike > 40;
 
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="font-semibold mb-2">Alerts</h2>
+
       <div className="mb-3">
         <div className="text-sm text-gray-600">Mentions (last 24h)</div>
-        <div className="text-2xl font-bold">{lastCount || 0}</div>
+        <div className="text-2xl font-bold">{last}</div>
       </div>
+
       <div>
-        <div className={`p-3 rounded ${isSpike ? 'bg-red-100 text-red-700' : 'bg-green-50 text-green-700'}`}>
-          {isSpike ? `Spike detected: ${spike}% ↑` : `No major spike (${spike}%)`}
+        <div
+          className={`p-3 rounded ${
+            isSpike ? "bg-red-100 text-red-700"
+                    : "bg-green-50 text-green-700"
+          }`}
+        >
+          {isSpike
+            ? `Spike detected: ${spike}% ↑`
+            : `No major spike (${spike}%)`}
         </div>
       </div>
     </div>

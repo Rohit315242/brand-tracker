@@ -8,12 +8,15 @@ import Navbar from "../components/Navbar";
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
+
 const socket = io(API_BASE, {
   autoConnect: true,
+  transports: ["websocket"],
   reconnection: true,
   reconnectionAttempts: 10,
   reconnectionDelay: 1000
 });
+
 
 export default function Dashboard() {
   const [mentions, setMentions] = useState([]);
